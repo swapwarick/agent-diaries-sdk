@@ -1,6 +1,6 @@
 {
   "name": "@swapwarick_n/agent-diaries",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Local Agent Diaries to prevent repetitive tasks and maintain state.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
