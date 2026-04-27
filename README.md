@@ -95,6 +95,17 @@ Without a persistent memory, autonomous agents suffer from two major flaws: they
 2. **Breaking Infinite Loops:** Agents often get trapped in recursive feedback loops (e.g., repeatedly clicking the same link, scraping the same website, or fixing the same block of code). A persistent diary gives the agent self-awareness. It can recognize "I have already attempted this exact task" and forces the workflow to move on to new, productive actions.
 3. **Faster Execution:** Bypassing redundant tasks means your workflow skips unnecessary network requests, database queries, and heavy computations, resulting in highly optimized, blazing-fast agent runs.
 
+## 🤖 Autonomously Tested by AI
+
+This SDK isn't just unit-tested—it's **AI-tested**. 
+
+We unleashed an autonomous swarm of **OpenClaw** agents to rigorously stress-test the SDK in real-time, complex scenarios. The results were flawless:
+* **Infinite Loop Prevention:** The agents intentionally threw themselves into recursive failure loops. The SDK detected the signatures and successfully halted the execution, saving tokens.
+* **Collaborative Memory:** Agents successfully used the SDK to hand off massive context strings to *other* agents asynchronously by reading from the diary state.
+* **High-Volume Streams:** The SDK successfully deduplicated 500 tasks with high redundancy in <1ms.
+
+You can read the raw autonomous testing logs in our [Advanced Scenario Report](./agent-diaries-advanced-report.md).
+
 ## 📚 API Reference
 
 - **`diary.hasProcessedTask(title: string): Promise<boolean>`**
