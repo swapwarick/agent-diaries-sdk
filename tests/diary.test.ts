@@ -37,12 +37,17 @@ describe('Agent Diaries Core Logic', () => {
     const agent = new AgentDiary({ agentId: 'test-agent', storage });
     
     expect(await agent.hasProcessedTask('Task A')).toBe(false);
+    expect(await agent.getTaskResult('Task A')).toBeUndefined();
     
-    await agent.writeTaskResult('Task A', 'Success');
+    await agent.writeTaskResult('Task A', 'Success Output');
     
     expect(await agent.hasProcessedTask('Task A')).toBe(true);
     // Should catch case-insensitive variants
     expect(await agent.hasProcessedTask('TASK a')).toBe(true);
+    
+    // Should return the exact result string
+    expect(await agent.getTaskResult('Task A')).toBe('Success Output');
+    expect(await agent.getTaskResult('task A')).toBe('Success Output');
   });
 
   it('should accurately filter new tasks from a batch', async () => {

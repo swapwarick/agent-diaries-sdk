@@ -66,6 +66,17 @@ export class AgentDiary {
   }
 
   /**
+   * Retrieves the stored result of a previously processed task, if available.
+   * This allows agents to reuse past outputs instead of regenerating them.
+   */
+  public async getTaskResult(title: string): Promise<string | undefined> {
+    const signature = AgentDiary.normalizeSignature(title);
+    const state = await this.readDiary();
+    const record = state.history.find(r => r.signature === signature);
+    return record?.result;
+  }
+
+  /**
    * Filters out items that the agent has already processed.
    */
   public async filterNewTasks<T extends { title: string }>(tasks: T[]): Promise<T[]> {

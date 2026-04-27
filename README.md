@@ -43,11 +43,12 @@ async function runAgent() {
   const currentTask = 'Download Q3 Financial Report';
 
   // 2. Check memory before executing
-  const alreadyDone = await diary.hasProcessedTask(currentTask);
+  const pastResult = await diary.getTaskResult(currentTask);
   
-  if (alreadyDone) {
+  if (pastResult) {
     console.log(`[Agent] ⏩ Skipping task: "${currentTask}". I remember doing this already!`);
-    return;
+    console.log(`[Agent] 💡 Previous Result: ${pastResult}`);
+    return pastResult; // Reuse the old output instantly!
   }
 
   // 3. Execute your agent's logic
@@ -57,6 +58,7 @@ async function runAgent() {
   // 4. Update the diary
   await diary.writeTaskResult(currentTask, result);
   console.log(`[Agent] ✅ Task complete. Diary updated!`);
+  return result;
 }
 
 runAgent();
