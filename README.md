@@ -2,10 +2,11 @@
   <h1>🧠 Agent Diaries</h1>
   <p><strong>Give your autonomous AI agents a persistent memory.</strong></p>
 
-  [![npm version](https://img.shields.io/npm/v/@swapwarick_n/agent-diaries.svg?style=flat-square)](https://www.npmjs.com/package/@swapwarick_n/agent-diaries)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
-  [![codecov](https://codecov.io/gh/swapwarick/agent-diaries-sdk/graph/badge.svg)](https://codecov.io/gh/swapwarick/agent-diaries-sdk)
+  [![NPM Version](https://img.shields.io/npm/v/@swapwarick_n/agent-diaries?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/@swapwarick_n/agent-diaries)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Codecov](https://img.shields.io/codecov/c/github/swapwarick/agent-diaries-sdk?style=for-the-badge&logo=codecov)](https://codecov.io/gh/swapwarick/agent-diaries-sdk)
+  [![CI Pipeline](https://img.shields.io/github/actions/workflow/status/swapwarick/agent-diaries-sdk/codecov.yml?style=for-the-badge&logo=github-actions&label=CI)](https://github.com/swapwarick/agent-diaries-sdk/actions)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 </div>
 
 <br />
