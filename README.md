@@ -5,6 +5,7 @@
   [![npm version](https://img.shields.io/npm/v/@swapwarick_n/agent-diaries.svg?style=flat-square)](https://www.npmjs.com/package/@swapwarick_n/agent-diaries)
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
   [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
+  [![codecov](https://codecov.io/gh/swapwarick/agent-diaries-sdk/graph/badge.svg)](https://codecov.io/gh/swapwarick/agent-diaries-sdk)
 </div>
 
 <br />
