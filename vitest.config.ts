@@ -8,6 +8,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'json']
-    }
+    },
+    reporters: ['default', 'junit'],
+    outputFile: 'test-report.junit.xml'
   },
 });
