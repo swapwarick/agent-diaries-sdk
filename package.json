@@ -4,6 +4,9 @@
   "description": "Local Agent Diaries to prevent repetitive tasks and maintain state.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
