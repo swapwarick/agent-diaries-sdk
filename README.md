@@ -84,6 +84,14 @@ const newTasks = await diary.filterNewTasks(incomingTasks);
 // Output: [{ title: 'Scrape Pricing Page' }]
 ```
 
+## 💸 Saving Tokens & Optimizing Workflows
+
+Without a persistent memory, autonomous agents suffer from two major flaws: they **waste tokens** and they **get stuck in loops**. `Agent Diaries` solves both:
+
+1. **Massive Token Savings:** Every time an agent processes a task, it usually involves expensive calls to LLMs (OpenAI, Anthropic, etc.). By wrapping your agent logic with `diary.hasProcessedTask()`, you immediately short-circuit execution for redundant tasks. The agent never prompts the LLM for work it has already done, drastically reducing your API bills.
+2. **Breaking Infinite Loops:** Agents often get trapped in recursive feedback loops (e.g., repeatedly clicking the same link, scraping the same website, or fixing the same block of code). A persistent diary gives the agent self-awareness. It can recognize "I have already attempted this exact task" and forces the workflow to move on to new, productive actions.
+3. **Faster Execution:** Bypassing redundant tasks means your workflow skips unnecessary network requests, database queries, and heavy computations, resulting in highly optimized, blazing-fast agent runs.
+
 ## 🛠 Extensibility 
 
 Need to scale up? You can easily plug in your own database (like SQLite, Redis, or Upstash) by implementing the `StorageAdapter`:
