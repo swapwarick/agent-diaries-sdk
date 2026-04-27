@@ -107,4 +107,70 @@ describe('Agent Diaries Core Logic', () => {
     expect(await agent.hasProcessedTask('Task 15')).toBe(true); // oldest in memory
     expect(await agent.hasProcessedTask('Task 14')).toBe(false); // evicted from memory
   });
+
+  it('edge case: should handle empty or null task titles gracefully', async () => {
+    // Tests line 48 in diary.ts
+    const s1 = AgentDiary.normalizeSignature('');
+    const s2 = AgentDiary.normalizeSignature(null as any);
+    const s3 = AgentDiary.normalizeSignature(undefined as any);
+    expect(s1).toBe('');
+    expect(s2).toBe('');
+    expect(s3).toBe('');
+  });
+
+  it('edge case: default storage initialization', () => {
+    // Tests line 31 in diary.ts
+    const agent = new AgentDiary({ agentId: 'default-storage-agent' });
+    expect(agent).toBeDefined();
+    // Clean up default storage dir created by this test
+    const defaultDir = path.join(process.cwd(), '.agent-diaries');
+    if (fs.existsSync(defaultDir)) {
+      fs.rmSync(defaultDir, { recursive: true, force: true });
+    }
+  });
+
+  it('storage edge case: creating base directory if it does not exist', () => {
+    // Tests line 17 in storage.ts
+    const newDir = path.join(__dirname, '.new-test-dir');
+    if (fs.existsSync(newDir)) {
+      fs.rmSync(newDir, { recursive: true, force: true });
+    }
+    const newStorage = new LocalFileStorage({ baseDir: newDir });
+    expect(fs.existsSync(newDir)).toBe(true);
+    fs.rmSync(newDir, { recursive: true, force: true });
+  });
+
+  it('storage edge case: handling corrupted JSON read', async () => {
+    // Tests lines 36-37 in storage.ts
+    const agent = new AgentDiary({ agentId: 'corrupt-agent', storage });
+    await agent.writeTaskResult('Task 1', 'Success');
+    
+    const filePath = path.join(TEST_DIR, 'diary_corrupt-agent.json');
+    fs.writeFileSync(filePath, '{ bad json ]');
+    
+    // Attempting to read should catch error and return empty state
+    const state = await agent.readDiary();
+    expect(state.runCount).toBe(0);
+  });
+
+  it('storage edge case: handling file write errors', async () => {
+    // Tests lines 47-48 in storage.ts
+    // To force a write error on all OSes, we create a file, then pass it as the baseDir.
+    // writeFile will throw ENOTDIR when it tries to write inside a file.
+    const fileAsDir = path.join(__dirname, '.file-as-dir');
+    fs.writeFileSync(fileAsDir, 'not a dir');
+    const invalidStorage = new LocalFileStorage({ baseDir: fileAsDir });
+    
+    let caughtError = false;
+    try {
+      await invalidStorage.set('test-key', { test: 1 } as any);
+    } catch (e) {
+      caughtError = true;
+    }
+    
+    expect(caughtError).toBe(true);
+    
+    // Cleanup
+    fs.rmSync(fileAsDir, { force: true });
+  });
 });
