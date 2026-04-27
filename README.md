@@ -94,9 +94,20 @@ Without a persistent memory, autonomous agents suffer from two major flaws: they
 2. **Breaking Infinite Loops:** Agents often get trapped in recursive feedback loops (e.g., repeatedly clicking the same link, scraping the same website, or fixing the same block of code). A persistent diary gives the agent self-awareness. It can recognize "I have already attempted this exact task" and forces the workflow to move on to new, productive actions.
 3. **Faster Execution:** Bypassing redundant tasks means your workflow skips unnecessary network requests, database queries, and heavy computations, resulting in highly optimized, blazing-fast agent runs.
 
+## 📚 API Reference
+
+- **`diary.hasProcessedTask(title: string): Promise<boolean>`**
+  Checks if the exact task signature has been processed before.
+- **`diary.getTaskResult(title: string): Promise<string | undefined>`**
+  Retrieves the exact string output/result from a previously completed task so your agent can instantly reuse it.
+- **`diary.filterNewTasks(tasks: T[]): Promise<T[]>`**
+  Pass in an array of task objects. Returns only the tasks that the agent has *not* seen yet.
+- **`diary.writeTaskResult(title: string, result: string): Promise<void>`**
+  Saves the task and its result into the agent's persistent memory bank.
+
 ## 🛠 Extensibility 
 
-Need to scale up? You can easily plug in your own database (like SQLite, Redis, or Upstash) by implementing the `StorageAdapter`:
+Need to scale up? You can easily plug in your own database (like **MemPalace**, SQLite, Redis, or Upstash) by implementing the `StorageAdapter`:
 
 ```typescript
 import { AgentDiary, StorageAdapter, AgentState } from '@swapwarick_n/agent-diaries';
