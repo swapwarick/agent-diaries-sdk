@@ -2,4 +2,3 @@ node_modules
 dist
 .agent-diaries
 TEST_RESULTS.md
-tests/

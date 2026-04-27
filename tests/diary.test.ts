@@ -1,0 +1,110 @@
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { AgentDiary } from '../src/diary';
+import { LocalFileStorage } from '../src/storage';
+import * as fs from 'fs';
+import * as path from 'path';
+
+describe('Agent Diaries Core Logic', () => {
+  const TEST_DIR = path.join(__dirname, '.test-diaries');
+  let storage: LocalFileStorage<any>;
+
+  beforeEach(() => {
+    // Fresh isolated storage for each test run
+    if (!fs.existsSync(TEST_DIR)) {
+      fs.mkdirSync(TEST_DIR, { recursive: true });
+    }
+    storage = new LocalFileStorage({ baseDir: TEST_DIR });
+  });
+
+  afterEach(() => {
+    // Clean up test files
+    if (fs.existsSync(TEST_DIR)) {
+      fs.rmSync(TEST_DIR, { recursive: true, force: true });
+    }
+  });
+
+  it('should normalize signatures correctly to catch variations', () => {
+    const s1 = AgentDiary.normalizeSignature('  Download Q3 Report  ');
+    const s2 = AgentDiary.normalizeSignature('download q3 report');
+    const s3 = AgentDiary.normalizeSignature('DOWNLOAD   Q3 REPORT');
+
+    expect(s1).toBe('download q3 report');
+    expect(s1).toBe(s2);
+    expect(s2).toBe(s3);
+  });
+
+  it('should remember processed tasks and prevent duplicates', async () => {
+    const agent = new AgentDiary({ agentId: 'test-agent', storage });
+    
+    expect(await agent.hasProcessedTask('Task A')).toBe(false);
+    
+    await agent.writeTaskResult('Task A', 'Success');
+    
+    expect(await agent.hasProcessedTask('Task A')).toBe(true);
+    // Should catch case-insensitive variants
+    expect(await agent.hasProcessedTask('TASK a')).toBe(true);
+  });
+
+  it('should accurately filter new tasks from a batch', async () => {
+    const agent = new AgentDiary({ agentId: 'batch-agent', storage });
+    await agent.writeTaskResult('Known Task 1', 'Success');
+    await agent.writeTaskResult('Known Task 2', 'Success');
+
+    const incomingTasks = [
+      { title: 'Known Task 1' },
+      { title: 'Brand New Task' },
+      { title: 'known task 2' }, // Case variant
+      { title: 'Another New Task' }
+    ];
+
+    const newTasks = await agent.filterNewTasks(incomingTasks);
+    
+    expect(newTasks).toHaveLength(2);
+    expect(newTasks[0].title).toBe('Brand New Task');
+    expect(newTasks[1].title).toBe('Another New Task');
+  });
+
+  it('multi-agent: should maintain isolated state across different agents', async () => {
+    const agentAlpha = new AgentDiary({ agentId: 'alpha', storage });
+    const agentBeta = new AgentDiary({ agentId: 'beta', storage });
+
+    await agentAlpha.writeTaskResult('Shared Task', 'Result Alpha');
+
+    // Alpha remembers it
+    expect(await agentAlpha.hasProcessedTask('Shared Task')).toBe(true);
+    
+    // Beta is a different agent and shouldn't know about it
+    expect(await agentBeta.hasProcessedTask('Shared Task')).toBe(false);
+
+    // Alpha state counts
+    const stateAlpha = await agentAlpha.readDiary();
+    expect(stateAlpha.runCount).toBe(1);
+
+    const stateBeta = await agentBeta.readDiary();
+    expect(stateBeta.runCount).toBe(0);
+  });
+
+  it('load test: should adhere to maxHistory limits on high volume', async () => {
+    const maxLimit = 10;
+    const agent = new AgentDiary({ agentId: 'heavy-agent', storage, maxHistory: maxLimit });
+
+    // Write 25 tasks
+    for (let i = 0; i < 25; i++) {
+      await agent.writeTaskResult(`Task ${i}`, `Result ${i}`);
+    }
+
+    const state = await agent.readDiary();
+    
+    // Total run count should track all executions accurately
+    expect(state.runCount).toBe(25);
+    
+    // But the history and signatures should be capped to prevent unbounded memory growth
+    expect(state.history).toHaveLength(maxLimit);
+    expect(state.seenSignatures).toHaveLength(maxLimit);
+
+    // Should only remember the LAST 10 tasks (Task 15 to Task 24)
+    expect(await agent.hasProcessedTask('Task 24')).toBe(true); // latest
+    expect(await agent.hasProcessedTask('Task 15')).toBe(true); // oldest in memory
+    expect(await agent.hasProcessedTask('Task 14')).toBe(false); // evicted from memory
+  });
+});
