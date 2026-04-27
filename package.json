@@ -1,0 +1,26 @@
+{
+  "name": "@swapwarick_n/agent-diaries",
+  "version": "1.0.2",
+  "description": "Local Agent Diaries to prevent repetitive tasks and maintain state.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "memory",
+    "diary",
+    "local"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0",
+    "vitest": "^4.1.5"
+  }
+}
